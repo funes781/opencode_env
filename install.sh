@@ -8,7 +8,7 @@ CHANGES_DIR="$WORKFLOW_DIR/changes"
 WORKFLOW_FILE="$WORKFLOW_DIR/workflow.md"
 PLAN_FILE="$PLANS_DIR/plan.md"
 CHANGES_FILE="$CHANGES_DIR/changes.md"
-SKILLS_CONFIG_FILE="$INSTALL_DIR/.opencode/skills-config.json"
+SKILLS_CONFIG_FILE="$INSTALL_DIR/skills-config.json"
 SKILL_MANAGER_FILE="$INSTALL_DIR/scripts/skill-manager.sh"
 MANAGER_LINK="/usr/local/bin/manager"
 CONFIG_FILE="$INSTALL_DIR/opencode.json"
@@ -86,7 +86,7 @@ else
 fi
 
 if [ ! -f "$SKILLS_CONFIG_FILE" ]; then
-  curl -fsSL "$RAW_URL/.opencode/skills-config.json" -o "$SKILLS_CONFIG_FILE"
+  curl -fsSL "$RAW_URL/skills-config.json" -o "$SKILLS_CONFIG_FILE"
   echo "  [DOWNLOADED] $SKILLS_CONFIG_FILE"
 else
   check_file "$SKILLS_CONFIG_FILE"
