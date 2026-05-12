@@ -5,8 +5,11 @@ GREEN='\033[0;32m'; YELLOW='\033[1;33m'; CYAN='\033[0;36m'; RED='\033[0;31m'; NC
 
 INSTALL_DIR="$(pwd)"
 WORKFLOW_DIR="$INSTALL_DIR/.opencode-workflow"
+WORKFLOW_FILE="$WORKFLOW_DIR/workflow.md"
 PLANS_DIR="$WORKFLOW_DIR/plans"
+PLAN_FILE="$PLANS_DIR/plan.md"
 CHANGES_DIR="$WORKFLOW_DIR/changes"
+CHANGES_FILE="$CHANGES_DIR/changes.md"
 SKILLS_CONFIG_FILE="$INSTALL_DIR/skills-config.json"
 SKILL_MANAGER_FILE="$INSTALL_DIR/scripts/manager.sh"
 MANAGER_LINK="/usr/local/bin/manager"
