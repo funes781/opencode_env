@@ -9,7 +9,7 @@ WORKFLOW_FILE="$WORKFLOW_DIR/workflow.md"
 PLAN_FILE="$PLANS_DIR/plan.md"
 CHANGES_FILE="$CHANGES_DIR/changes.md"
 SKILLS_CONFIG_FILE="$INSTALL_DIR/skills-config.json"
-SKILL_MANAGER_FILE="$INSTALL_DIR/scripts/skill-manager.sh"
+SKILL_MANAGER_FILE="$INSTALL_DIR/scripts/manager.sh"
 MANAGER_LINK="/usr/local/bin/manager"
 CONFIG_FILE="$INSTALL_DIR/opencode.json"
 RAW_URL="https://raw.githubusercontent.com/funes781/opencode_env/main"
@@ -17,30 +17,42 @@ RAW_URL="https://raw.githubusercontent.com/funes781/opencode_env/main"
 echo "Installing OpenCode workflow..."
 
 check_opencode() {
-  if ! command -v opencode &>/dev/null; then
-    echo ""
-    echo "  OpenCode CLI is not installed."
-    echo "  It is required to use this workflow."
-    echo ""
-    read -r -p "  Install OpenCode now? [Y/n] " response
-    case "${response:-Y}" in
-      [Yy]*|"")
-        echo "  Installing OpenCode..."
-        if curl -fsSL https://opencode.ai/install | bash; then
-          echo "  [OK] OpenCode installed"
-        else
-          echo "  [WARN] Installation failed. Install manually: https://opencode.ai/install"
-        fi
-        ;;
-      *)
-        echo "  [WARN] Skipping OpenCode installation."
-        echo "         Install manually: https://opencode.ai/install"
-        ;;
-    esac
-    echo ""
-  else
-    echo "  [OK] OpenCode CLI found"
+  local found=0
+  if command -v opencode &>/dev/null; then
+    found=1
+  elif [ -x "$HOME/.opencode/bin/opencode" ]; then
+    found=1
+    export PATH="$HOME/.opencode/bin:$PATH"
   fi
+
+  if [ "$found" -eq 1 ]; then
+    echo "  [OK] OpenCode CLI found"
+    return
+  fi
+
+  echo ""
+  echo "  OpenCode CLI is not installed."
+  echo "  It is required to use this workflow."
+  echo ""
+  read -r -p "  Install OpenCode now? [Y/n] " response
+  case "${response:-Y}" in
+    [Yy]*|"")
+      echo "  Installing OpenCode..."
+      if curl -fsSL https://opencode.ai/install | bash; then
+        echo "  [OK] OpenCode installed"
+        if [ -x "$HOME/.opencode/bin/opencode" ]; then
+          export PATH="$HOME/.opencode/bin:$PATH"
+        fi
+      else
+        echo "  [WARN] Installation failed. Install manually: https://opencode.ai/install"
+      fi
+      ;;
+    *)
+      echo "  [WARN] Skipping OpenCode installation."
+      echo "         Install manually: https://opencode.ai/install"
+      ;;
+  esac
+  echo ""
 }
 
 check_opencode
@@ -94,9 +106,13 @@ fi
 
 if [ ! -f "$SKILL_MANAGER_FILE" ]; then
   mkdir -p "$INSTALL_DIR/scripts"
-  curl -fsSL "$RAW_URL/scripts/skill-manager.sh" -o "$SKILL_MANAGER_FILE"
-  chmod +x "$SKILL_MANAGER_FILE"
-  echo "  [DOWNLOADED] $SKILL_MANAGER_FILE"
+  if curl -fsSL "$RAW_URL/scripts/manager.sh" -o "$SKILL_MANAGER_FILE"; then
+    chmod +x "$SKILL_MANAGER_FILE"
+    echo "  [DOWNLOADED] $SKILL_MANAGER_FILE"
+  else
+    echo "  [WARN] scripts/manager.sh not found in repo, skipping"
+    rm -f "$SKILL_MANAGER_FILE"
+  fi
 else
   check_file "$SKILL_MANAGER_FILE"
 fi
