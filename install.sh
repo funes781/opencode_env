@@ -66,16 +66,20 @@ if [ ! -f "$SKILL_MANAGER_FILE" ]; then
   curl -fsSL "$RAW_URL/scripts/manager.sh" -o "$SKILL_MANAGER_FILE" && chmod +x "$SKILL_MANAGER_FILE" || true
 fi
 
-for link in "$MANAGER_LINK" "$SKILLMANAGER_LINK"; do
-  [ -L "$link" ] || [ -f "$link" ] && continue
-  if [ -w /usr/local/bin ]; then
-    ln -sf "$SKILL_MANAGER_FILE" "$link"
-  elif command -v sudo &>/dev/null; then
-    sudo ln -sf "$SKILL_MANAGER_FILE" "$link"
-  else
-    echo -e "  ${YELLOW}⚠${NC} Run: sudo ln -sf $SKILL_MANAGER_FILE $link"
+if command -v sudo &>/dev/null && [ -w /usr/local/bin ]; then
+  ln -sf "$SKILL_MANAGER_FILE" "$MANAGER_LINK" 2>/dev/null || true
+  ln -sf "$SKILL_MANAGER_FILE" "$SKILLMANAGER_LINK" 2>/dev/null || true
+else
+  SHELLRC="$HOME/.bashrc"
+  [ -f "$SHELLRC" ] || SHELLRC="$HOME/.bash_profile"
+  if [ -f "$SHELLRC" ] && ! grep -q "scripts/manager.sh" "$SHELLRC" 2>/dev/null; then
+    echo "" >> "$SHELLRC"
+    echo "# opencode_env" >> "$SHELLRC"
+    echo "export PATH=\"\$PATH:$INSTALL_DIR/scripts\"" >> "$SHELLRC"
+    echo -e "  ${CYAN}→${NC} Added scripts/ to PATH in $SHELLRC"
   fi
-done
+  export PATH="$PATH:$INSTALL_DIR/scripts"
+fi
 
 if [ ! -f "$CONFIG_FILE" ]; then
   cat > "$CONFIG_FILE" << 'CEOF'
@@ -91,6 +95,7 @@ fi
 echo ""
 echo -e "${BOLD}${GREEN}✔ Installation complete!${NC}"
 echo -e "  ${CYAN}→${NC} Commands: ${BOLD}manager${NC}, ${BOLD}skillmanager${NC}"
+echo -e "  ${CYAN}→${NC} Run 'source ~/.bashrc' or open new terminal to use them"
 echo -e "  ${CYAN}→${NC} Config:   opencode.json → .opencode-workflow/workflow.md"
 
 if [ ! -x "$HOME/.opencode/bin/opencode" ] && ! command -v opencode &>/dev/null; then

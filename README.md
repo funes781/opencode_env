@@ -7,7 +7,7 @@ Multi-agent workflow for OpenCode with planning and worker agents.
 Run install.sh to set up the workflow:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/funes781/opencode_env/main/install.sh | sudo bash
+curl -fsSL https://raw.githubusercontent.com/funes781/opencode_env/main/install.sh | bash
 ```
 
 Or locally:
