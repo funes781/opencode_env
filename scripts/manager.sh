@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-SKILLS_CONFIG="../skills-config.json"
+SKILLS_CONFIG=".opencode/skills-config.json"
 SKILLS_DIR=".opencode/skills"
 WORKSPACE_ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 
