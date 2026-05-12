@@ -95,9 +95,8 @@ fi
 echo ""
 echo -e "${BOLD}${GREEN}✔ Installation complete!${NC}"
 echo -e "  ${CYAN}→${NC} Commands: ${BOLD}manager${NC}, ${BOLD}skillmanager${NC}"
-echo -e "  ${CYAN}→${NC} Run 'source ~/.bashrc' or open new terminal to use them"
 echo -e "  ${CYAN}→${NC} Config:   opencode.json → .opencode-workflow/workflow.md"
-
-if [ ! -x "$HOME/.opencode/bin/opencode" ] && ! command -v opencode &>/dev/null; then
-  echo -e "  ${YELLOW}⚠${NC} Run 'source ~/.bashrc' or open a new terminal to use opencode."
-fi
+echo ""
+echo -e "${YELLOW}⚠ THIS SHELL needs reload to use the commands:${NC}"
+echo -e "  ${CYAN}→${NC} Run: ${BOLD}source ~/.bashrc${NC}"
+echo -e "  ${CYAN}→${NC} Or open a new terminal"
