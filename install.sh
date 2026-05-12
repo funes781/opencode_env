@@ -66,20 +66,18 @@ if [ ! -f "$SKILL_MANAGER_FILE" ]; then
   curl -fsSL "$RAW_URL/scripts/manager.sh" -o "$SKILL_MANAGER_FILE" && chmod +x "$SKILL_MANAGER_FILE" || true
 fi
 
-if command -v sudo &>/dev/null && [ -w /usr/local/bin ]; then
-  ln -sf "$SKILL_MANAGER_FILE" "$MANAGER_LINK" 2>/dev/null || true
-  ln -sf "$SKILL_MANAGER_FILE" "$SKILLMANAGER_LINK" 2>/dev/null || true
-else
-  SHELLRC="$HOME/.bashrc"
-  [ -f "$SHELLRC" ] || SHELLRC="$HOME/.bash_profile"
-  if [ -f "$SHELLRC" ] && ! grep -q "scripts/manager.sh" "$SHELLRC" 2>/dev/null; then
-    echo "" >> "$SHELLRC"
-    echo "# opencode_env" >> "$SHELLRC"
-    echo "export PATH=\"\$PATH:$INSTALL_DIR/scripts\"" >> "$SHELLRC"
-    echo -e "  ${CYAN}→${NC} Added scripts/ to PATH in $SHELLRC"
-  fi
-  export PATH="$PATH:$INSTALL_DIR/scripts"
+ln -sf "$SKILL_MANAGER_FILE" "$INSTALL_DIR/scripts/manager" 2>/dev/null || true
+ln -sf "$SKILL_MANAGER_FILE" "$INSTALL_DIR/scripts/skillmanager" 2>/dev/null || true
+
+SHELLRC="$HOME/.bashrc"
+[ -f "$SHELLRC" ] || SHELLRC="$HOME/.bash_profile"
+if [ -f "$SHELLRC" ] && ! grep -q "scripts/manager" "$SHELLRC" 2>/dev/null; then
+  echo "" >> "$SHELLRC"
+  echo "# opencode_env" >> "$SHELLRC"
+  echo "export PATH=\"\$PATH:$INSTALL_DIR/scripts\"" >> "$SHELLRC"
+  echo -e "  ${CYAN}→${NC} Added scripts/ to PATH in $SHELLRC"
 fi
+export PATH="$PATH:$INSTALL_DIR/scripts"
 
 if [ ! -f "$CONFIG_FILE" ]; then
   cat > "$CONFIG_FILE" << 'CEOF'
