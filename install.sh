@@ -11,6 +11,7 @@ CHANGES_FILE="$CHANGES_DIR/changes.md"
 SKILLS_CONFIG_FILE="$INSTALL_DIR/skills-config.json"
 SKILL_MANAGER_FILE="$INSTALL_DIR/scripts/manager.sh"
 MANAGER_LINK="/usr/local/bin/manager"
+SKILLMANAGER_LINK="/usr/local/bin/skillmanager"
 CONFIG_FILE="$INSTALL_DIR/opencode.json"
 RAW_URL="https://raw.githubusercontent.com/funes781/opencode_env/main"
 
@@ -117,18 +118,20 @@ else
   check_file "$SKILL_MANAGER_FILE"
 fi
 
-if [ ! -L "$MANAGER_LINK" ] && [ ! -f "$MANAGER_LINK" ]; then
-  if [ -w /usr/local/bin ]; then
-    ln -sf "$SKILL_MANAGER_FILE" "$MANAGER_LINK"
-    echo "  [LINKED] $MANAGER_LINK"
-  elif command -v sudo &>/dev/null; then
-    sudo ln -sf "$SKILL_MANAGER_FILE" "$MANAGER_LINK"
-    echo "  [LINKED] $MANAGER_LINK"
-  else
-    echo "  [WARN] Cannot create /usr/local/bin/manager (no sudo)."
-    echo "         Run: sudo ln -sf $SKILL_MANAGER_FILE $MANAGER_LINK"
+for link_path in "$MANAGER_LINK" "$SKILLMANAGER_LINK"; do
+  if [ ! -L "$link_path" ] && [ ! -f "$link_path" ]; then
+    if [ -w /usr/local/bin ]; then
+      ln -sf "$SKILL_MANAGER_FILE" "$link_path"
+      echo "  [LINKED] $link_path"
+    elif command -v sudo &>/dev/null; then
+      sudo ln -sf "$SKILL_MANAGER_FILE" "$link_path"
+      echo "  [LINKED] $link_path"
+    else
+      echo "  [WARN] Cannot create $link_path (no sudo)."
+      echo "         Run: sudo ln -sf $SKILL_MANAGER_FILE $link_path"
+    fi
   fi
-fi
+done
 
 if [ ! -f "$CONFIG_FILE" ]; then
   cat > "$CONFIG_FILE" << 'CEOF'
@@ -151,5 +154,10 @@ echo "Plan file:           $PLAN_FILE"
 echo "Changes file:        $CHANGES_FILE"
 echo "Skills config:       $SKILLS_CONFIG_FILE"
 echo "Scripts:             $SKILL_MANAGER_FILE"
-echo "Command:             $MANAGER_LINK"
+echo "Commands:            $MANAGER_LINK, $SKILLMANAGER_LINK"
 echo "Config:              $CONFIG_FILE"
+echo ""
+
+if [ ! -x "$HOME/.opencode/bin/opencode" ] && ! command -v opencode &>/dev/null; then
+  echo "  Run 'source ~/.bashrc' or open a new terminal to use opencode."
+fi
