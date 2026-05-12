@@ -1,0 +1,64 @@
+{
+  "skills": [
+    {
+      "name": "csharp-developer",
+      "label": "C# Developer",
+      "github_url": "https://raw.githubusercontent.com/Jeffallan/claude-skills/main/skills/csharp-developer/SKILL.md",
+      "references_source": "https://github.com/Jeffallan/claude-skills/tree/main/skills/csharp-developer/references"
+    },
+    {
+      "name": "dotnet-core-expert",
+      "label": ".NET Core Expert",
+      "github_url": "https://raw.githubusercontent.com/Jeffallan/claude-skills/main/skills/dotnet-core-expert/SKILL.md",
+      "references_source": "https://github.com/Jeffallan/claude-skills/tree/main/skills/dotnet-core-expert/references"
+    },
+    {
+      "name": "fullstack-guardian",
+      "label": "Fullstack Guardian",
+      "github_url": "https://raw.githubusercontent.com/Jeffallan/claude-skills/main/skills/fullstack-guardian/SKILL.md",
+      "references_source": "https://github.com/Jeffallan/claude-skills/tree/main/skills/fullstack-guardian/references"
+    },
+    {
+      "name": "game-developer",
+      "label": "Game Developer",
+      "github_url": "https://raw.githubusercontent.com/Jeffallan/claude-skills/main/skills/game-developer/SKILL.md",
+      "references_source": "https://github.com/Jeffallan/claude-skills/tree/main/skills/game-developer/references"
+    },
+    {
+      "name": "test-master",
+      "label": "Test Master",
+      "github_url": "https://raw.githubusercontent.com/Jeffallan/claude-skills/main/skills/test-master/SKILL.md",
+      "references_source": "https://github.com/Jeffallan/claude-skills/tree/main/skills/test-master/references"
+    },
+    {
+      "name": "typescript-pro",
+      "label": "TypeScript Pro",
+      "github_url": "https://raw.githubusercontent.com/Jeffallan/claude-skills/main/skills/typescript-pro/SKILL.md",
+      "references_source": "https://github.com/Jeffallan/claude-skills/tree/main/skills/typescript-pro/references"
+    },
+    {
+      "name": "security-reviewer",
+      "label": "Security Reviewer",
+      "github_url": "https://raw.githubusercontent.com/Jeffallan/claude-skills/main/skills/security-reviewer/SKILL.md",
+      "references_source": "https://github.com/Jeffallan/claude-skills/tree/main/skills/security-reviewer/references"
+    },
+    {
+      "name": "secure-code-guardian",
+      "label": "Secure Code Guardian",
+      "github_url": "https://raw.githubusercontent.com/Jeffallan/claude-skills/main/skills/secure-code-guardian/SKILL.md",
+      "references_source": "https://github.com/Jeffallan/claude-skills/tree/main/skills/secure-code-guardian/references"
+    },
+    {
+      "name": "react-expert",
+      "label": "React Pro",
+      "github_url": "https://raw.githubusercontent.com/Jeffallan/claude-skills/main/skills/react-expert/SKILL.md",
+      "references_source": "https://github.com/Jeffallan/claude-skills/tree/main/skills/react-expert/references"
+    },
+    {
+      "name": "devops-engineer",
+      "label": "DevOps Engineer",
+      "github_url": "https://raw.githubusercontent.com/Jeffallan/claude-skills/main/skills/devops-engineer/SKILL.md",
+      "references_source": "https://github.com/Jeffallan/claude-skills/tree/main/skills/devops-engineer/references"
+    }
+  ]
+}
