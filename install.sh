@@ -1,13 +1,12 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+GREEN='\033[0;32m'; YELLOW='\033[1;33m'; CYAN='\033[0;36m'; RED='\033[0;31m'; NC='\033[0m'; BOLD='\033[1m'
+
 INSTALL_DIR="$(pwd)"
 WORKFLOW_DIR="$INSTALL_DIR/.opencode-workflow"
 PLANS_DIR="$WORKFLOW_DIR/plans"
 CHANGES_DIR="$WORKFLOW_DIR/changes"
-WORKFLOW_FILE="$WORKFLOW_DIR/workflow.md"
-PLAN_FILE="$PLANS_DIR/plan.md"
-CHANGES_FILE="$CHANGES_DIR/changes.md"
 SKILLS_CONFIG_FILE="$INSTALL_DIR/skills-config.json"
 SKILL_MANAGER_FILE="$INSTALL_DIR/scripts/manager.sh"
 MANAGER_LINK="/usr/local/bin/manager"
@@ -15,7 +14,7 @@ SKILLMANAGER_LINK="/usr/local/bin/skillmanager"
 CONFIG_FILE="$INSTALL_DIR/opencode.json"
 RAW_URL="https://raw.githubusercontent.com/funes781/opencode_env/main"
 
-echo "Installing OpenCode workflow..."
+echo -e "${BOLD}Installing OpenCode workflow...${NC}"
 
 check_opencode() {
   local found=0
@@ -25,111 +24,53 @@ check_opencode() {
     found=1
     export PATH="$HOME/.opencode/bin:$PATH"
   fi
-
   if [ "$found" -eq 1 ]; then
-    echo "  [OK] OpenCode CLI found"
+    echo -e "  ${GREEN}✔${NC} OpenCode CLI found"
     return
   fi
-
   echo ""
-  echo "  OpenCode CLI is not installed."
-  echo "  It is required to use this workflow."
-  echo ""
+  echo -e "  ${YELLOW}OpenCode CLI is not installed. It is required.${NC}"
   read -r -p "  Install OpenCode now? [Y/n] " response
   case "${response:-Y}" in
     [Yy]*|"")
-      echo "  Installing OpenCode..."
+      echo -e "  ${CYAN}→${NC} Installing OpenCode..."
       if curl -fsSL https://opencode.ai/install | bash; then
-        echo "  [OK] OpenCode installed"
+        echo -e "  ${GREEN}✔${NC} OpenCode installed"
         if [ -x "$HOME/.opencode/bin/opencode" ]; then
           export PATH="$HOME/.opencode/bin:$PATH"
         fi
       else
-        echo "  [WARN] Installation failed. Install manually: https://opencode.ai/install"
+        echo -e "  ${RED}✖${NC} Installation failed. Manual: https://opencode.ai/install"
       fi
       ;;
     *)
-      echo "  [WARN] Skipping OpenCode installation."
-      echo "         Install manually: https://opencode.ai/install"
+      echo -e "  ${YELLOW}⚠${NC} Skipping. Manual: https://opencode.ai/install"
       ;;
   esac
   echo ""
 }
-
 check_opencode
 
-check_file() {
-  if [ -f "$1" ]; then
-    echo "  [OK] $1"
-  fi
-}
+mkdir -p "$WORKFLOW_DIR" "$PLANS_DIR" "$CHANGES_DIR"
 
-check_dir() {
-  if [ -d "$1" ]; then
-    echo "  [OK] $1"
-  else
-    echo "  [CREATED] $1"
-    mkdir -p "$1"
-  fi
-}
-
-check_dir "$WORKFLOW_DIR"
-check_dir "$PLANS_DIR"
-check_dir "$CHANGES_DIR"
-
-if [ ! -f "$WORKFLOW_FILE" ]; then
-  curl -fsSL "$RAW_URL/.opencode-workflow/workflow.md" -o "$WORKFLOW_FILE"
-  echo "  [DOWNLOADED] $WORKFLOW_FILE"
-else
-  check_file "$WORKFLOW_FILE"
-fi
-
-if [ ! -f "$PLAN_FILE" ]; then
-  touch "$PLAN_FILE"
-  echo "  [CREATED] $PLAN_FILE"
-else
-  check_file "$PLAN_FILE"
-fi
-
-if [ ! -f "$CHANGES_FILE" ]; then
-  touch "$CHANGES_FILE"
-  echo "  [CREATED] $CHANGES_FILE"
-else
-  check_file "$CHANGES_FILE"
-fi
-
-if [ ! -f "$SKILLS_CONFIG_FILE" ]; then
-  curl -fsSL "$RAW_URL/skills-config.json" -o "$SKILLS_CONFIG_FILE"
-  echo "  [DOWNLOADED] $SKILLS_CONFIG_FILE"
-else
-  check_file "$SKILLS_CONFIG_FILE"
-fi
+[ -f "$WORKFLOW_FILE" ] || curl -fsSL "$RAW_URL/.opencode-workflow/workflow.md" -o "$WORKFLOW_FILE"
+[ -f "$PLAN_FILE" ] || touch "$PLAN_FILE"
+[ -f "$CHANGES_FILE" ] || touch "$CHANGES_FILE"
+[ -f "$SKILLS_CONFIG_FILE" ] || curl -fsSL "$RAW_URL/skills-config.json" -o "$SKILLS_CONFIG_FILE"
 
 if [ ! -f "$SKILL_MANAGER_FILE" ]; then
   mkdir -p "$INSTALL_DIR/scripts"
-  if curl -fsSL "$RAW_URL/scripts/manager.sh" -o "$SKILL_MANAGER_FILE"; then
-    chmod +x "$SKILL_MANAGER_FILE"
-    echo "  [DOWNLOADED] $SKILL_MANAGER_FILE"
-  else
-    echo "  [WARN] scripts/manager.sh not found in repo, skipping"
-    rm -f "$SKILL_MANAGER_FILE"
-  fi
-else
-  check_file "$SKILL_MANAGER_FILE"
+  curl -fsSL "$RAW_URL/scripts/manager.sh" -o "$SKILL_MANAGER_FILE" && chmod +x "$SKILL_MANAGER_FILE" || true
 fi
 
-for link_path in "$MANAGER_LINK" "$SKILLMANAGER_LINK"; do
-  if [ ! -L "$link_path" ] && [ ! -f "$link_path" ]; then
-    if [ -w /usr/local/bin ]; then
-      ln -sf "$SKILL_MANAGER_FILE" "$link_path"
-      echo "  [LINKED] $link_path"
-    elif command -v sudo &>/dev/null; then
-      sudo ln -sf "$SKILL_MANAGER_FILE" "$link_path"
-      echo "  [LINKED] $link_path"
-    else
-      echo "  [WARN] Cannot create $link_path (no sudo)."
-      echo "         Run: sudo ln -sf $SKILL_MANAGER_FILE $link_path"
-    fi
+for link in "$MANAGER_LINK" "$SKILLMANAGER_LINK"; do
+  [ -L "$link" ] || [ -f "$link" ] && continue
+  if [ -w /usr/local/bin ]; then
+    ln -sf "$SKILL_MANAGER_FILE" "$link"
+  elif command -v sudo &>/dev/null; then
+    sudo ln -sf "$SKILL_MANAGER_FILE" "$link"
+  else
+    echo -e "  ${YELLOW}⚠${NC} Run: sudo ln -sf $SKILL_MANAGER_FILE $link"
   fi
 done
 
@@ -142,22 +83,13 @@ if [ ! -f "$CONFIG_FILE" ]; then
   ]
 }
 CEOF
-  echo "  [CREATED] $CONFIG_FILE"
-else
-  check_file "$CONFIG_FILE"
 fi
 
 echo ""
-echo "Installation complete!"
-echo "Workflow file:       $WORKFLOW_FILE"
-echo "Plan file:           $PLAN_FILE"
-echo "Changes file:        $CHANGES_FILE"
-echo "Skills config:       $SKILLS_CONFIG_FILE"
-echo "Scripts:             $SKILL_MANAGER_FILE"
-echo "Commands:            $MANAGER_LINK, $SKILLMANAGER_LINK"
-echo "Config:              $CONFIG_FILE"
-echo ""
+echo -e "${BOLD}${GREEN}✔ Installation complete!${NC}"
+echo -e "  ${CYAN}→${NC} Commands: ${BOLD}manager${NC}, ${BOLD}skillmanager${NC}"
+echo -e "  ${CYAN}→${NC} Config:   opencode.json → .opencode-workflow/workflow.md"
 
 if [ ! -x "$HOME/.opencode/bin/opencode" ] && ! command -v opencode &>/dev/null; then
-  echo "  Run 'source ~/.bashrc' or open a new terminal to use opencode."
+  echo -e "  ${YELLOW}⚠${NC} Run 'source ~/.bashrc' or open a new terminal to use opencode."
 fi
