@@ -63,7 +63,10 @@ mkdir -p "$WORKFLOW_DIR" "$PLANS_DIR" "$CHANGES_DIR"
 
 if [ ! -f "$SKILL_MANAGER_FILE" ]; then
   mkdir -p "$INSTALL_DIR/scripts"
-  curl -fsSL "$RAW_URL/scripts/manager.sh" -o "$SKILL_MANAGER_FILE" && chmod +x "$SKILL_MANAGER_FILE" || true
+  if curl -fsSL "$RAW_URL/scripts/manager.sh" -o "$SKILL_MANAGER_FILE"; then
+    chmod +x "$SKILL_MANAGER_FILE"
+    sed -i 's|SKILLS_CONFIG="../skills-config.json"|SKILLS_CONFIG="./skills-config.json"|' "$SKILL_MANAGER_FILE"
+  fi
 fi
 
 ln -sf "$SKILL_MANAGER_FILE" "$INSTALL_DIR/scripts/manager" 2>/dev/null || true
