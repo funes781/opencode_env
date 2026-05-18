@@ -59,6 +59,24 @@
       "label": "DevOps Engineer",
       "github_url": "https://raw.githubusercontent.com/Jeffallan/claude-skills/main/skills/devops-engineer/SKILL.md",
       "references_source": "https://github.com/Jeffallan/claude-skills/tree/main/skills/devops-engineer/references"
+    },
+    {
+      "name": "websocket-engineer",
+      "label": "Websocket Engineer",
+      "github_url": "https://raw.githubusercontent.com/Jeffallan/claude-skills/main/skills/websocket-engineer/SKILL.md",
+      "references_source": "https://github.com/Jeffallan/claude-skills/tree/main/skills/websocket-engineer/references"
+    },
+    {
+      "name": "sre-engineer",
+      "label": "SRE Engineer",
+      "github_url": "https://raw.githubusercontent.com/Jeffallan/claude-skills/main/skills/sre-engineer/SKILL.md",
+      "references_source": "https://github.com/Jeffallan/claude-skills/tree/main/skills/sre-engineer/references"
+    },
+    {
+      "name": "python-pro",
+      "label": "Python pro",
+      "github_url": "https://raw.githubusercontent.com/Jeffallan/claude-skills/main/skills/python-pro/SKILL.md",
+      "references_source": "https://github.com/Jeffallan/claude-skills/tree/main/skills/python-pro/references"
     }
   ]
 }
